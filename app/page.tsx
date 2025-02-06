@@ -20,7 +20,7 @@ interface ApiResponse {
 
 const fetchData = async (): Promise<DailyStats[]> => {
   // Replace with your actual API endpoint
-  const apiUrl = 'http://monitor-api.korupt.me/api/v1/weekly';
+  const apiUrl = 'https://monitor-api.korupt.me/api/v1/weekly';
 
   const response = await fetch(apiUrl);
 
