@@ -13,23 +13,29 @@ interface DailyStats {
   rightClicks: number;
 }
 
-// Simulated API data - replace with actual API call
+interface ApiResponse {
+  success: boolean;
+  data: DailyStats[];
+}
+
 const fetchData = async (): Promise<DailyStats[]> => {
-  // Simulated delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    return {
-      date: date.toISOString(),
-      keyPresses: Math.floor(Math.random() * 10000) + 5000,
-      leftClicks: Math.floor(Math.random() * 1500) + 700,
-      rightClicks: Math.floor(Math.random() * 500) + 300,
-    };
-  });
-  
-  return last7Days.reverse();
+  // Replace with your actual API endpoint
+  const apiUrl = 'http://monitor-api.korupt.me/api/v1/weekly';
+
+  const response = await fetch(apiUrl);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  }
+
+  const jsonData: ApiResponse = await response.json();
+
+  if (!jsonData.success) {
+    throw new Error('API returned success: false');
+  }
+
+  // Return the data array
+  return jsonData.data;
 };
 
 export default function Home() {
@@ -67,9 +73,9 @@ export default function Home() {
             <Terminal className="w-8 h-8" />
             <h1 className="text-2xl font-mono font-bold">~/input-analytics $</h1>
           </div>
-          <a 
-            href="https://github.com/korupt-monitor" 
-            target="_blank" 
+          <a
+            href="https://github.com/korupt-monitor"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-green-600 hover:text-green-400 transition-colors"
           >
@@ -134,7 +140,7 @@ export default function Home() {
                 data.map((day) => (
                   <TableRow key={day.date} className="border-green-800 hover:bg-green-950">
                     <TableCell className="font-mono text-green-400">
-                      {format(new Date(day.date), "MMM dd, yyyy")}
+                      {day.date}
                     </TableCell>
                     <TableCell className="font-mono text-green-400 text-right">
                       {day.keyPresses.toLocaleString()}
@@ -158,18 +164,18 @@ export default function Home() {
             $ ls ./articles/
           </div>
           <div className="p-4 space-y-4">
-            <a 
-              href="https://your-blog-url.com/article-1" 
-              target="_blank" 
+            <a
+              href="https://your-blog-url.com/article-1"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between p-2 border border-green-800 rounded hover:bg-green-950 transition-colors"
             >
               <span className="font-mono text-green-400">Building a Developer Analytics Dashboard</span>
               <ExternalLink className="w-4 h-4 text-green-600" />
             </a>
-            <a 
-              href="https://your-blog-url.com/article-2" 
-              target="_blank" 
+            <a
+              href="https://your-blog-url.com/article-2"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between p-2 border border-green-800 rounded hover:bg-green-950 transition-colors"
             >
@@ -183,9 +189,9 @@ export default function Home() {
           <p className="text-sm text-green-600 font-mono">
             $ cron: data refresh scheduled every 24h
           </p>
-          <a 
-            href="https://github.com/korupt-monitor" 
-            target="_blank" 
+          <a
+            href="https://github.com/korupt-monitor"
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-green-600 hover:text-green-400 transition-colors mt-2 text-sm font-mono"
           >
